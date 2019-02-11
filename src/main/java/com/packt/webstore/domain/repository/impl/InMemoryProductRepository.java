@@ -39,6 +39,18 @@ public class InMemoryProductRepository implements ProductRepository{
        jdbcTemplate.update(SQL, params);  
     }
 	
+	@Override
+	public List<Product> getProductsByCategory(String category){
+		String SQL = 
+				"SELECT * "
+				+ "FROM PRODUCTS "
+				+ "WHERE CATEGORY = :category";
+		Map<String, Object> params = new HashMap<String, Object>();
+		params.put("category", category);
+		
+		return jdbcTemplate.query(SQL, params, new ProductMapper());
+	}
+	
 	private static final class ProductMapper implements RowMapper<Product> { 
       public Product mapRow(ResultSet rs, int rowNum) throws SQLException { 
 		   Product product = new Product(); 
