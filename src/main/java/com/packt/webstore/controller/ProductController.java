@@ -9,6 +9,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.MatrixVariable;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.packt.webstore.domain.Product;
@@ -46,6 +47,25 @@ public class ProductController {
 	@RequestMapping("/products/filter/{params}")
 	public String getProductsByFilter(@MatrixVariable(pathVar="params") Map<String, List<String>> filterParams, Model model) {
 		model.addAttribute("products", productService.getProductsByFilter(filterParams));
+		return "products";
+	}
+	
+	@RequestMapping("/product")
+	public String getProductById(@RequestParam("id") String prodcutId, Model model) {
+		model.addAttribute("product", productService.getProductById(prodcutId));
+		return "product";
+	}
+	
+	@RequestMapping("products/{category}/{price}")
+	public String getProductByCategoryPriceBrand(@PathVariable("category") String productCategory, 
+			@MatrixVariable(pathVar="price") Map<String, String> priceRange, 
+			@RequestParam("brand") String brand,
+			Model model) {
+		System.out.println("category = " + productCategory +
+				"priceRange = " + priceRange.get("low") +
+				" " + priceRange.get("high") +
+				"brand = " + brand);
+		model.addAttribute("products", productService.getProductsByCategoryPriceBrand(productCategory, priceRange, brand));
 		return "products";
 	}
 }
